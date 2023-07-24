@@ -12,68 +12,17 @@ import {
     View
 } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
+import { HomeScreenInterface, UserDataInterface } from '../utils/interfaces';
+import { HomeScreenUseRouteParamList } from '../utils/paramlists';
+import { GET_CURRENT_USER_DATA } from '../utils/GraphQLqueries';
+import { REFRESH_USER_TOKEN, UPDATE_CURRENT_USER_DATA } from '../utils/GraphQLmutations';
+import { keepToken } from '../utils/tokenOperations';
 
-interface Props {
-    navigation: any;
-}
-
-interface UserData {
-    me: {
-        __typename: string;
-        createdAt: string;
-        email: string;
-        id: string;
-        profile: {
-            __typename: string;
-            fullName: string;
-        }
-    };
-    prevState: null
-}
-
-type ParamList = Readonly<{ key: string; name: string; path?: string | undefined; params: { token?: string, refreshToken?: string } }>
-
-const GET_CURRENT_USER_DATA = gql`
-        query Me {
-            me {
-                id
-                profile {
-                fullName
-                }
-                createdAt
-                email
-            }
-        }`;
-
-const UPDATE_CURRENT_USER_DATA = gql`
-        mutation UpdateProfile($input: EditUserInfoInput!) {
-            updateProfile(input: $input) {
-                id
-                profile {
-                    fullName
-                }
-                email
-                createdAt
-            }
-        }`;
-
-const REFRESH_USER_TOKEN = gql`
-        mutation Token($refreshToken: String!) {
-            token(refreshToken: $refreshToken) {
-                accessToken
-                refreshToken
-            }
-        }`;
-
-async function keepToken(key: string, value: string) {
-    await SecureStore.setItemAsync(key, value);
-}
-
-const HomeScreen: React.FC<Props> = ({ navigation }) => {
-    const [user, setUser] = useState<UserData | null>(null);
+const HomeScreen: React.FC<HomeScreenInterface> = ({ navigation }) => {
+    const [user, setUser] = useState<UserDataInterface | null>(null);
     const [fullName, setFullName] = useState('');
-    const { params: { token, refreshToken } } = useRoute<ParamList>();
+    const { params: { token, refreshToken } } = useRoute<HomeScreenUseRouteParamList>();
 
     const handleLogOut = async () => {
         await SecureStore.deleteItemAsync('accessToken');
@@ -82,15 +31,19 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         navigation.replace("Auth");
     }
 
-    const { data: currentUserData, loading: currentUserLoading, error: currentUserError = null } = useQuery(
-        GET_CURRENT_USER_DATA,
-        {
-            context: {
-                headers: {
-                    authorization: token,
+    const {
+            data: currentUserData,
+            loading: currentUserLoading,
+            error: currentUserError = null
+        } = useQuery(
+            GET_CURRENT_USER_DATA,
+            {
+                context: {
+                    headers: {
+                        authorization: token,
+                    },
                 },
-            },
-        }
+            }
     );
 
     const [updateUserProfile] = useMutation(

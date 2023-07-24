@@ -1,12 +1,9 @@
 import { gql, useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { StyleSheet, Button, Text, TextInput, View, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { RegistrationScreenInterface } from '../utils/interfaces';
 
-interface Props {
-  navigation: any
-}
-
-const RegistrationScreen: React.FC<Props> = ({ navigation }) => {
+const RegistrationScreen: React.FC<RegistrationScreenInterface> = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [fullName, setFullName] = useState('');
     const [password, setPassword] = useState('');
@@ -35,7 +32,6 @@ const RegistrationScreen: React.FC<Props> = ({ navigation }) => {
         <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
             style={styles.container}
-            // keyboardVerticalOffset={height}
         >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.inner}>

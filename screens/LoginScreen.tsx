@@ -2,26 +2,10 @@ import { useMutation, gql } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Button, Text, TextInput, View, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, Platform } from 'react-native';
 import Checkbox from 'expo-checkbox';
-import * as SecureStore from 'expo-secure-store';
+import { LoginScreenInterface } from '../utils/interfaces';
+import { getToken, keepToken } from '../utils/tokenOperations';
 
-async function keepToken(key: string, value: string) {
-  await SecureStore.setItemAsync(key, value);
-}
-
-async function getToken(key: string) {
-  let result = await SecureStore.getItemAsync(key);
-  if (result) {
-    return result;
-  } else {
-    return null;
-  }
-}
-
-interface Props {
-  navigation: any
-}
-
-const LoginScreen: React.FC<Props> = ({ navigation }) => {
+const LoginScreen: React.FC<LoginScreenInterface> = ({ navigation }) => {
     const [userToken, setUserToken] = useState('');
     const [hasToken, setHasToken] = useState(false);
     const [rememberMe, setRememberMe] = useState(true);
@@ -72,14 +56,11 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         }
         setCurrentUserCredentials({ userEmail: login.user.email, userFullName: login.user.profile.fullName, profileCreationDate: new Date(login.user.createdAt).toUTCString() });
         navigation.replace("HomeScreen", { token: login.accessToken, refreshToken: login.refreshToken });
-        // const checkToken = await getToken('refreshToken');
-        // console.log('checkToken => ', checkToken);
     }
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
             style={styles.container}
-            // keyboardVerticalOffset={height}
         >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.inner}>
