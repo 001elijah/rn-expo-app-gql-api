@@ -5,9 +5,7 @@ run ```npm start```
 
 open camera and scan the QR code
 
-### Server is available at
-
-[https://uplab-test-auth-backend-3211cfc38d0c.herokuapp.com/graphql](https://uplab-test-auth-backend-3211cfc38d0c.herokuapp.com/graphql)
+### Server is available at [https://uplab-test-auth-backend-3211cfc38d0c.herokuapp.com/graphql](https://uplab-test-auth-backend-3211cfc38d0c.herokuapp.com/graphql)
 
 You can use a GraphQL sandbox to write queries and test your requests: [https://studio.apollographql.com/sandbox/explorer?endpoint=https://uplab-test-auth-backend-3211cfc38d0c.herokuapp.com/graphql](https://studio.apollographql.com/sandbox/explorer?endpoint=https://uplab-test-auth-backend-3211cfc38d0c.herokuapp.com/graphql)
 
@@ -60,6 +58,6 @@ You can use a GraphQL sandbox to write queries and test your requests: [https://
 To learn more, take a look at the following resources:
 
 -   [React Navigation](https://reactnavigation.org/) - learn about React Navigation.
--   [Apollo client](https://www.apollographql.com/docs/react/)
--   [Apollo auth guide](https://www.apollographql.com/docs/react/networking/authentication/)
--   [GraphQL docs](https://graphql.org/learn/)
+-   [Apollo client](https://www.apollographql.com/docs/react/) - learn about Apollo client.
+-   [Apollo auth guide](https://www.apollographql.com/docs/react/networking/authentication/) - learn Apollo auth guide.
+-   [GraphQL docs](https://graphql.org/learn/) - learn GraphQL docs.
