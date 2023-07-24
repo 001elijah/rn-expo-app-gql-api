@@ -2,16 +2,14 @@ import { useMutation, gql } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Button, Text, TextInput, View, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, Platform } from 'react-native';
 import Checkbox from 'expo-checkbox';
-import { LoginScreenInterface } from '../utils/interfaces';
+import { LoginScreenProps } from '../utils/types';
 import { getToken, keepToken } from '../utils/tokenOperations';
 
-const LoginScreen: React.FC<LoginScreenInterface> = ({ navigation }) => {
-    const [userToken, setUserToken] = useState('');
-    const [hasToken, setHasToken] = useState(false);
-    const [rememberMe, setRememberMe] = useState(true);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [currentUserCredentials, setCurrentUserCredentials] = useState<{ userEmail: string, userFullName: string, profileCreationDate: string }>();
+const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
+    const [hasToken, setHasToken] = useState<boolean>(false);
+    const [rememberMe, setRememberMe] = useState<boolean>(true);
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
     const [loginUser, { data, loading, error }] = useMutation(gql`
         mutation Login($rememberMe: Boolean!, $password: String!, $email: String!) {
             login(rememberMe: $rememberMe, password: $password, email: $email) {
@@ -34,7 +32,6 @@ const LoginScreen: React.FC<LoginScreenInterface> = ({ navigation }) => {
         const token = await getToken('accessToken');
         const refreshToken = await getToken('refreshToken');
             if (token) {
-                setUserToken(token);
                 setHasToken(true);
                 navigation.replace("HomeScreen", { token, refreshToken });
             }
@@ -43,19 +40,22 @@ const LoginScreen: React.FC<LoginScreenInterface> = ({ navigation }) => {
 
     const handleLogintSubmit = async () => {
         Keyboard.dismiss();
-        const { data: { login } } = await loginUser({ variables: { rememberMe, email, password } });
-
-        await keepToken('accessToken', login.accessToken);
-        if (login.refreshToken) {
-
-            await keepToken('refreshToken', login.refreshToken);
+        try {
+            const { data: { login } } = await loginUser({ variables: { rememberMe, email, password } });
+            await keepToken('accessToken', login.accessToken);
+            if (login.refreshToken) {
+    
+                await keepToken('refreshToken', login.refreshToken);
+            }
+            if (login.refreshToken === null) {
+    
+                await keepToken('refreshToken', 'null');
+            }
+            navigation.replace("HomeScreen", { token: login.accessToken, refreshToken: login.refreshToken });
+        } catch (error: any) {
+            console.log('handleLogintSubmit error => :', error.message)
         }
-        if (login.refreshToken === null) {
 
-            await keepToken('refreshToken', 'null');
-        }
-        setCurrentUserCredentials({ userEmail: login.user.email, userFullName: login.user.profile.fullName, profileCreationDate: new Date(login.user.createdAt).toUTCString() });
-        navigation.replace("HomeScreen", { token: login.accessToken, refreshToken: login.refreshToken });
     }
     return (
         <KeyboardAvoidingView
@@ -65,7 +65,7 @@ const LoginScreen: React.FC<LoginScreenInterface> = ({ navigation }) => {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.inner}>
                     <Text style={styles.header}>{loading ? 'Loading...' : 'Login'}</Text>
-                    { currentUserCredentials && <Text>{[currentUserCredentials.userEmail, currentUserCredentials.userFullName, currentUserCredentials.profileCreationDate]}</Text>}
+                    {/* { currentUserCredentials && <Text>{[currentUserCredentials.userEmail, currentUserCredentials.userFullName, currentUserCredentials.profileCreationDate]}</Text>} */}
                     <TextInput style={styles.textInput} value={email} onChangeText={setEmail} placeholder="Type your email"/>
                     <TextInput style={styles.textInput} value={password} onChangeText={setPassword} placeholder="Type your password" />
                     <View style={styles.checkboxWrapper}>
@@ -83,7 +83,7 @@ const LoginScreen: React.FC<LoginScreenInterface> = ({ navigation }) => {
                     <View style={styles.btnContainer}>
                         <Button title='go to register' onPress={() => navigation.navigate('RegistrationScreen')} />
                     </View>
-                    {error ? <Text>{error.message}</Text> : <Text>{JSON.stringify(data)}</Text>}
+                    {error && <Text style={styles.errorText}>{error?.message === 'INCORRECT_CREDENTIALS' ? 'wrong email or password': error?.message}</Text>}
                 </View>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
@@ -120,6 +120,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         marginTop: 12,
     },
+    errorText: {
+        color: 'red',
+    }
 });
 
 export default LoginScreen;

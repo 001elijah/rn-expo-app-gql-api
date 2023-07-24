@@ -1,11 +1,15 @@
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import { NavigationContainer, ParamListBase } from '@react-navigation/native';
+import {
+  NavigationContainer,
+  // ParamListBase
+} from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import RegistrationScreen from './screens/RegistrationScreen';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import { getToken } from './utils/tokenOperations';
+import { AuthProps, RootStackParamList } from './utils/types';
 
 const httpLink = createHttpLink({
   uri: 'https://uplab-test-auth-backend-3211cfc38d0c.herokuapp.com/graphql',
@@ -29,9 +33,9 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-const Stack = createStackNavigator<ParamListBase>();
+const Stack = createStackNavigator<RootStackParamList>();
 
-const Auth: React.FC = () => {
+const Auth: React.FC<AuthProps> = () => {
   return (
       <Stack.Navigator initialRouteName="LoginScreen">
         <Stack.Screen

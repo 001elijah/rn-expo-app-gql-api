@@ -13,15 +13,16 @@ import {
 } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { useMutation, useQuery } from '@apollo/client';
-import { HomeScreenInterface, UserDataInterface } from '../utils/interfaces';
+import { UserDataInterface } from '../utils/interfaces';
+import { HomeScreenProps } from '../utils/types';
 import { HomeScreenUseRouteParamList } from '../utils/paramlists';
 import { GET_CURRENT_USER_DATA } from '../utils/GraphQLqueries';
 import { REFRESH_USER_TOKEN, UPDATE_CURRENT_USER_DATA } from '../utils/GraphQLmutations';
 import { keepToken } from '../utils/tokenOperations';
 
-const HomeScreen: React.FC<HomeScreenInterface> = ({ navigation }) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     const [user, setUser] = useState<UserDataInterface | null>(null);
-    const [fullName, setFullName] = useState('');
+    const [fullName, setFullName] = useState<string>('');
     const { params: { token, refreshToken } } = useRoute<HomeScreenUseRouteParamList>();
 
     const handleLogOut = async () => {
@@ -85,7 +86,7 @@ const HomeScreen: React.FC<HomeScreenInterface> = ({ navigation }) => {
             await updateUserProfile({ variables: { input: { fullName: name } } });
             setFullName('');
         } catch (error: any) {
-            console.log('handleUpdateUserProfileName Error: =>', error)
+            console.log('handleUpdateUserProfileName Error: =>', error.message)
             if (error?.message === 'Not authorized') {
                 if (refreshToken !== 'null') {
                     refreshToken && await refreshAccessToken(refreshToken);
@@ -94,7 +95,6 @@ const HomeScreen: React.FC<HomeScreenInterface> = ({ navigation }) => {
                     }, 0);
                 }
                 else {
-                    alert('Please login again');
                     handleLogOut();
                 };
             }
@@ -117,6 +117,7 @@ const HomeScreen: React.FC<HomeScreenInterface> = ({ navigation }) => {
                 console.log('refreshAccessToken Error: => ', error);
             }
         } else {
+            alert('Please login again');
             handleLogOut();
         }
     }

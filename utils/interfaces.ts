@@ -1,11 +1,3 @@
-export interface LoginScreenInterface {
-  navigation: any
-}
-
-export interface HomeScreenInterface {
-    navigation: any;
-}
-
 export interface UserDataInterface {
     me: {
         __typename: string;
@@ -18,8 +10,4 @@ export interface UserDataInterface {
         }
     };
     prevState: null
-}
-
-export interface RegistrationScreenInterface {
-  navigation: any
 }

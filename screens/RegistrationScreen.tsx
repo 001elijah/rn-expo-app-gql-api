@@ -1,9 +1,9 @@
 import { gql, useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { StyleSheet, Button, Text, TextInput, View, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { RegistrationScreenInterface } from '../utils/interfaces';
+import { RegistrationScreenProps } from '../utils/types';
 
-const RegistrationScreen: React.FC<RegistrationScreenInterface> = ({ navigation }) => {
+const RegistrationScreen: React.FC<RegistrationScreenProps> = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [fullName, setFullName] = useState('');
     const [password, setPassword] = useState('');
@@ -48,7 +48,7 @@ const RegistrationScreen: React.FC<RegistrationScreenInterface> = ({ navigation 
                     <View style={styles.btnContainer}>
                         <Button title='go to login' onPress={() => navigation.navigate('LoginScreen')} />
                     </View>
-                    {error ? <Text>{error.message}</Text> : <Text>{JSON.stringify(data)}</Text>}
+                    {error && <Text style={styles.errorText}>{error.message === 'USER_EXISTS_ERROR' ? 'user with this email already exists' : error.message}</Text>}
                 </View>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
@@ -78,6 +78,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         marginTop: 12,
     },
+    errorText: {
+        color: 'red',
+    }
 });
 
 export default RegistrationScreen;
