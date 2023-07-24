@@ -57,6 +57,8 @@ You can use a GraphQL sandbox to write queries and test your requests: [https://
 
 To learn more, take a look at the following resources:
 
+-   [React Native](https://reactnative.dev/) - learn about React Native.
+-   [Expo](https://docs.expo.dev/) - learn about Expo.
 -   [React Navigation](https://reactnavigation.org/) - learn about React Navigation.
 -   [Apollo client](https://www.apollographql.com/docs/react/) - learn about Apollo client.
 -   [Apollo auth guide](https://www.apollographql.com/docs/react/networking/authentication/) - learn Apollo auth guide.
