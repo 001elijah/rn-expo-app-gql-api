@@ -11,7 +11,7 @@ open camera and scan the QR code
 
 You can use a GraphQL sandbox to write queries and test your requests: [https://studio.apollographql.com/sandbox/explorer?endpoint=https://uplab-test-auth-backend-3211cfc38d0c.herokuapp.com/graphql](https://studio.apollographql.com/sandbox/explorer?endpoint=https://uplab-test-auth-backend-3211cfc38d0c.herokuapp.com/graphql)
 
-The application should have the following features:
+## The application has the following features:
 
 ### User can create a new account
 
