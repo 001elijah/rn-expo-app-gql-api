@@ -2,4 +2,4 @@
 
 # how to start the App
 run npm start
-open camera and scan the App 
+open camera and scan the QR code 
